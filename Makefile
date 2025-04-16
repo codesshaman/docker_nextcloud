@@ -33,13 +33,12 @@ help:
 	@echo -e "$(WARN_COLOR)- make ps			: View configuration"
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make re			: Rebuild configuration"
-	@echo -e "$(WARN_COLOR)- make read			: Restart adcm only"
-	@echo -e "$(WARN_COLOR)- make repg			: Restart postgres only"
+	@echo -e "$(WARN_COLOR)- make renginx			: Restart nginx only"
+	@echo -e "$(WARN_COLOR)- make redb			: Restart mariadb only"
 	@echo -e "$(WARN_COLOR)- make clean			: Cleaning configuration$(NO_COLOR)"
 
 build:
 	@printf "$(YELLOW)==== Building configuration ${name}... ====$(NO_COLOR)\n"
-	@bash scripts/rm-gitkeep.sh
 	@docker-compose -f ./docker-compose.yml up -d --build
 
 conn:
@@ -89,15 +88,15 @@ re:
 	@docker-compose -f ./docker-compose.yml down
 	@docker-compose -f ./docker-compose.yml up -d --build
 
-read:
-	@printf "Rebuild adcm...\n"
-	@docker-compose -f ./docker-compose.yml down adcm
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build adcm
+renginx:
+	@printf "Rebuild nginx...\n"
+	@docker-compose -f ./docker-compose.yml down nextcloud-nginx
+	@docker-compose -f ./docker-compose.yml up -d --no-deps --build nextcloud-nginx
 
-repg:
-	@printf "$(OK_COLOR)==== Rebuild postgres... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml down postgres
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build postgres
+redb:
+	@printf "$(OK_COLOR)==== Rebuild mariadb... ====$(NO_COLOR)\n"
+	@docker-compose -f ./docker-compose.yml down nextcloud-mariadb
+	@docker-compose -f ./docker-compose.yml up -d --no-deps --build nextcloud-mariadb
 
 ps:
 	@printf "$(BLUE)==== View configuration ${name}... ====$(NO_COLOR)\n"
