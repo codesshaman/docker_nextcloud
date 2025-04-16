@@ -50,10 +50,6 @@ conpos:
 	@printf "$(ERROR_COLOR)==== Connect to postgres container... ====$(NO_COLOR)\n"
 	@docker exec -it postgres sh
 
-git:
-	@printf "$(YELLOW)==== Set user name and email to git for ${name} repo... ====$(NO_COLOR)\n"
-	@bash scripts/gituser.sh
-
 down:
 	@printf "$(ERROR_COLOR)==== Stopping configuration ${name}... ====$(NO_COLOR)\n"
 	@docker-compose -f ./docker-compose.yml down

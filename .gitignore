@@ -1,1 +1,4 @@
+nextcloud
+redis
 .env
+db
