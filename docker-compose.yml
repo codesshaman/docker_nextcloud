@@ -1,50 +1,8 @@
 version: '3.9'
 
 services:
-  db:
-    image: mariadb:10.11
-    restart: unless-stopped
-    volumes:
-      - ./db:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: nextcloud
-      MYSQL_USER: nextcloud
-      MYSQL_PASSWORD: nextcloudpass
-
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    volumes:
-      - ./redis:/data
-
-  app:
-    image: nextcloud:28-apache
-    restart: unless-stopped
-    volumes:
-      - ./nextcloud:/var/www/html
-    environment:
-      MYSQL_PASSWORD: nextcloudpass
-      MYSQL_DATABASE: nextcloud
-      MYSQL_USER: nextcloud
-      MYSQL_HOST: db
-      REDIS_HOST: redis
-    depends_on:
-      - db
-      - redis
-
-  cron:
-    image: nextcloud:28-apache
-    restart: unless-stopped
-    volumes:
-      - ./nextcloud:/var/www/html
-    entrypoint: /cron.sh
-    depends_on:
-      - db
-      - redis
-
   nginx:
-    image: nginx:alpine
+    image: $NGINX_VERSION
     restart: unless-stopped
     ports:
       - "80:80"
@@ -53,3 +11,45 @@ services:
       - ./nextcloud:/var/www/html:ro
     depends_on:
       - app
+
+  app:
+    image: $NEXTCLOUD_VERSION
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud:/var/www/html
+    environment:
+      MYSQL_PASSWORD: $NEXTCLOUD_PASS
+      MYSQL_DATABASE: $NEXTCLOUD_DB
+      MYSQL_USER: $NEXTCLOUD_USER
+      MYSQL_HOST: db
+      REDIS_HOST: redis
+    depends_on:
+      - db
+      - redis
+
+  cron:
+    image: $NEXTCLOUD_VERSION
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: $MARIADB_VERSION
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $NEXTCLOUD_DB
+      MYSQL_USER: $NEXTCLOUD_USER
+      MYSQL_PASSWORD: $NEXTCLOUD_PASS
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - ./redis:/data
