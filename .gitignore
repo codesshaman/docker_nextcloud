@@ -1,3 +1,6 @@
+document_data
+document_log
+mysql_data
 nextcloud
 redis
 .env
